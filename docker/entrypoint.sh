@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 echo "Setting up docker env..."
 echo "MODE: $MODE"
