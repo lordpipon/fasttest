@@ -1,14 +1,9 @@
-![LibreSpeed Logo](https://github.com/librespeed/speedtest/blob/master/.logo/logo3.png?raw=true)
-
-# LibreSpeed
+# FastTest
+# Forked from Librespeed
 
 No Flash, No Java, No Websocket, No Bullshit.
 
 This is a very lightweight speed test implemented in Javascript, using XMLHttpRequest and Web Workers.
-
-## Try it
-
-[Take a speed test](https://librespeed.org)
 
 ## Compatibility
 
