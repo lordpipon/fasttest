@@ -2,18 +2,758 @@
 <html>
 
 <head>
-    <link rel="shortcut icon" href="favicon.ico">
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="apple-touch-icon" href="images/icon-192.png">
-    <meta name="theme-color" content="#000000">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
-    <meta charset="UTF-8" />
-    <script type="text/javascript" src="design-switch.js"></script>
-    <title>LibreSpeed</title>
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link rel="apple-touch-icon" href="images/icon-192.png">
+	<meta name="theme-color" content="#000000">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
+	<meta charset="UTF-8" />
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="speedtest.js"></script>
+	<script type="text/javascript">
+		function I(i) { return document.getElementById(i); }
+
+		var SPEEDTEST_SERVERS = [
+			{name:"Amsterdam, Netherlands", server:"//ams.speedtest.clouvider.net/backend", id:51, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Clouvider", sponsorURL:"https://www.clouvider.co.uk/"},
+			{name:"Atlanta, United States", server:"//atl.speedtest.clouvider.net/backend", id:53, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Clouvider", sponsorURL:"https://www.clouvider.co.uk/"},
+			{name:"Bangalore, India", server:"//in1.backend.librespeed.org/", id:75, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"DigitalOcean", sponsorURL:"https://www.digitalocean.com"},
+			{name:"Chicago, USA", server:"https://chispeed.sharktech.net", id:93, dlURL:"backend/garbage.php", ulURL:"backend/empty.php", pingURL:"backend/empty.php", getIpURL:"backend/getIP.php", sponsorName:"Sharktech", sponsorURL:"https://sharktech.net"},
+			{name:"Denver, USA", server:"https://denspeed.sharktech.net", id:92, dlURL:"backend/garbage.php", ulURL:"backend/empty.php", pingURL:"backend/empty.php", getIpURL:"backend/getIP.php", sponsorName:"Sharktech", sponsorURL:"https://sharktech.net"},
+			{name:"Frankfurt, Germany", server:"//fra.speedtest.clouvider.net/backend", id:50, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Clouvider", sponsorURL:"https://www.clouvider.co.uk/"},
+			{name:"Helsinki, Finland (Hetzner)", server:"//finew.openspeed.org/", id:22, dlURL:"backend437/garbage.php", ulURL:"backend437/empty.php", pingURL:"backend437/empty.php", getIpURL:"backend437/getIP.php", sponsorName:"Daily Health Insurance Group", sponsorURL:"//dhig.net/"},
+			{name:"Johannesburg, South Africa", server:"//za1.backend.librespeed.org/", id:70, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"HOSTAFRICA", sponsorURL:"https://www.hostafrica.co.za"},
+			{name:"Las Vegas, USA", server:"https://lasspeed.sharktech.net", id:90, dlURL:"backend/garbage.php", ulURL:"backend/empty.php", pingURL:"backend/empty.php", getIpURL:"backend/getIP.php", sponsorName:"Sharktech", sponsorURL:"https://sharktech.net"},
+			{name:"London, England", server:"//lon.speedtest.clouvider.net/backend", id:49, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Clouvider", sponsorURL:"https://www.clouvider.co.uk/"},
+			{name:"Los Angeles, United States", server:"//la.speedtest.clouvider.net/backend", id:54, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Clouvider", sponsorURL:"https://www.clouvider.co.uk/"},
+			{name:"Los Angeles, USA", server:"https://laxspeed.sharktech.net", id:91, dlURL:"backend/garbage.php", ulURL:"backend/empty.php", pingURL:"backend/empty.php", getIpURL:"backend/getIP.php", sponsorName:"Sharktech", sponsorURL:"https://sharktech.net"},
+			{name:"New York, United States", server:"//nyc.speedtest.clouvider.net/backend", id:52, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Clouvider", sponsorURL:"https://www.clouvider.co.uk/"},
+			{name:"Nottingham, England", server:"https://uk1.backend.librespeed.org", id:43, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"fosshost.org", sponsorURL:"https://fosshost.org"},
+			{name:"Nuremberg, Germany (Hetzner)", server:"//de1.backend.librespeed.org", id:28, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Snopyta", sponsorURL:"https://snopyta.org"},
+			{name:"Poznan, Poland", server:"https://speedtest.kamilszczepanski.com", id:74, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Kamil Szczepanski", sponsorURL:"https://kamilszczepanski.com"},
+			{name:"Prague, Czech Republic", server:"//speedtest.cesnet.cz", id:79, dlURL:"backend/garbage.php", ulURL:"backend/empty.php", pingURL:"backend/empty.php", getIpURL:"backend/getIP.php", sponsorName:"CESNET", sponsorURL:"https://www.cesnet.cz"},
+			{name:"Tokyo, Japan", server:"https://librespeed.a573.net/", id:82, dlURL:"backend/garbage.php", ulURL:"backend/empty.php", pingURL:"backend/empty.php", getIpURL:"backend/getIP.php", sponsorName:"A573", sponsorURL:"https://mirror.a573.net/"},
+			{name:"Vilnius, Lithuania", server:"//lt1.backend.librespeed.org/", id:69, dlURL:"garbage.php", ulURL:"empty.php", pingURL:"empty.php", getIpURL:"getIP.php", sponsorName:"Time4VPS", sponsorURL:"https://www.time4vps.com"}
+		];
+
+		var s = new Speedtest();
+		s.setParameter("telemetry_level", "basic");
+
+		function initServers() {
+			if (SPEEDTEST_SERVERS.length == 0) {
+				I("loading").className = "hidden";
+				I("serverArea").style.display = "none";
+				I("testWrapper").className = "visible";
+				initUI();
+			} else {
+				var noServersAvailable = function () {
+					I("message").innerHTML = "No servers available";
+				}
+				var runServerSelect = function () {
+					s.selectServer(function (server) {
+						if (server != null) {
+							I("loading").className = "hidden";
+							function parseServerName(name) {
+								var parts = (name || "").split(",");
+								for (var p = 0; p < parts.length; p++) parts[p] = parts[p].trim();
+								var country, city;
+								if (parts.length >= 3) {
+									country = parts[1];
+									city = parts[0];
+								} else if (parts.length === 2) {
+									country = parts[1];
+									city = parts[0];
+								} else {
+									country = parts[0];
+									city = "";
+								}
+								country = country.replace(/\s*\([^)]*\)\s*/g, "").trim();
+								return { country: country, city: city };
+							}
+							var indexed = [];
+							for (var j = 0; j < SPEEDTEST_SERVERS.length; j++) {
+								indexed.push({ idx: j, server: SPEEDTEST_SERVERS[j] });
+							}
+							indexed.sort(function (a, b) {
+								var pa = parseServerName(a.server.name);
+								var pb = parseServerName(b.server.name);
+								return pa.country.localeCompare(pb.country) || pa.city.localeCompare(pb.city);
+							});
+							for (var i = 0; i < indexed.length; i++) {
+								if (indexed[i].server.pingT == -1) continue;
+								var option = document.createElement("option");
+								option.value = indexed[i].idx;
+								option.textContent = indexed[i].server.name;
+								if (indexed[i].server === server) option.selected = true;
+								I("server").appendChild(option);
+							}
+							I("testWrapper").className = "visible";
+							initUI();
+						} else {
+							noServersAvailable();
+						}
+					});
+				}
+				if (typeof SPEEDTEST_SERVERS === "string") {
+					s.loadServerList(SPEEDTEST_SERVERS, function (servers) {
+						if (servers == null) {
+							noServersAvailable();
+						} else {
+							SPEEDTEST_SERVERS = servers;
+							runServerSelect();
+						}
+					});
+				} else {
+					s.addTestPoints(SPEEDTEST_SERVERS);
+					runServerSelect();
+				}
+			}
+		}
+
+		var meterBk = "#E0E0E0";
+		var dlColor = "#6060AA",
+			ulColor = "#309030",
+			pingColor = "#ffcc00",
+			jitColor = "#cc0000";
+		var progColor = "#EEEEEE";
+
+		function drawMeter(c, amount, bk, fg, progress, prog) {
+			var ctx = c.getContext("2d");
+			var dp = window.devicePixelRatio || 1;
+			var cw = c.clientWidth * dp, ch = c.clientHeight * dp;
+			var sizScale = ch * 0.0055;
+			if (c.width == cw && c.height == ch) {
+				ctx.clearRect(0, 0, cw, ch);
+			} else {
+				c.width = cw;
+				c.height = ch;
+			}
+			ctx.beginPath();
+			ctx.strokeStyle = bk;
+			ctx.lineWidth = 16 * sizScale;
+			ctx.arc(c.width / 2, c.height - 58 * sizScale, c.height / 1.8 - ctx.lineWidth, -Math.PI * 1.1, Math.PI * 0.1);
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.strokeStyle = fg;
+			ctx.lineWidth = 16 * sizScale;
+			ctx.arc(c.width / 2, c.height - 58 * sizScale, c.height / 1.8 - ctx.lineWidth, -Math.PI * 1.1, amount * Math.PI * 1.2 - Math.PI * 1.1);
+			ctx.stroke();
+			if (typeof progress !== "undefined") {
+				ctx.fillStyle = prog;
+				ctx.fillRect(c.width * 0.3, c.height - 16 * sizScale, c.width * 0.4 * progress, 4 * sizScale);
+			}
+		}
+		function mbpsToAmount(s) {
+			return 1 - (1 / (Math.pow(1.3, Math.sqrt(s))));
+		}
+		function msToAmount(s) {
+			return 1 - (1 / (Math.pow(1.08, Math.sqrt(s))));
+		}
+		function format(d) {
+			d = Number(d);
+			if (d < 10) return d.toFixed(2);
+			if (d < 100) return d.toFixed(1);
+			return d.toFixed(0);
+		}
+		function oscillate() {
+			return 1 + 0.02 * Math.sin(Date.now() / 100);
+		}
+
+		var uiData = null;
+		var chart1, chart2;
+		var last_chart_pos;
+		var max_upload = 0, min_upload = 0, max_download = 0, min_download = 0;
+		var total_upload = 0, total_download = 0;
+		var ping_sum = 0, ping_cnt = 0.001;
+		var timers = [];
+		var parameters = {
+			overheadCompensationFactor: 1.0,
+			enable_quirks: true,
+			time_ul_max: 15,
+			time_dl_max: 15,
+			time_ulGraceTime: 3,
+			time_dlGraceTime: 1.5,
+			count_ping: 35,
+			url_dl: "backend/garbage.php",
+			url_ul: "backend/empty.php",
+			url_ping: "backend/empty.php",
+			url_getIp: "backend/getIP.php",
+			time_auto: false
+		};
+
+		function startStop() {
+			if (s.getState() == 3) {
+				s.abort();
+				uiData = null;
+				I("startStopBtn").className = "";
+				I("startStopBtn").setAttribute("aria-label", "Start");
+				I("server").disabled = false;
+				initUI();
+			} else {
+				I("startStopBtn").className = "running";
+				I("startStopBtn").setAttribute("aria-label", "Abort");
+				I("shareArea").style.display = "none";
+				I("server").disabled = true;
+				s.onupdate = function (data) {
+					uiData = data;
+				};
+				s.onend = function (aborted) {
+					I("startStopBtn").className = "";
+					I("startStopBtn").setAttribute("aria-label", "Start");
+					I("server").disabled = false;
+					updateUI(true);
+					if (!aborted) {
+						try {
+							var testId = uiData.testId;
+							if (testId != null) {
+								var shareURL = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/results/?id=" + testId;
+								I("resultsImg").src = shareURL;
+								I("resultsURL").value = shareURL;
+								I("testId").innerHTML = testId;
+								I("shareArea").style.display = "";
+							}
+						} catch (e) { }
+					}
+				};
+				s.start();
+			}
+		}
+
+		function updateUI(forced) {
+			if (!forced && s.getState() != 3) return;
+			if (uiData == null) return;
+			var status = uiData.testState;
+			I("ip").textContent = uiData.clientIp;
+			I("dlText").textContent = (status == 1 && uiData.dlStatus == 0) ? "..." : format(uiData.dlStatus);
+			drawMeter(I("dlMeter"), mbpsToAmount(Number(uiData.dlStatus * (status == 1 ? oscillate() : 1))), meterBk, dlColor, Number(uiData.dlProgress), progColor);
+			I("ulText").textContent = (status == 3 && uiData.ulStatus == 0) ? "..." : format(uiData.ulStatus);
+			drawMeter(I("ulMeter"), mbpsToAmount(Number(uiData.ulStatus * (status == 3 ? oscillate() : 1))), meterBk, ulColor, Number(uiData.ulProgress), progColor);
+			if (status === 2 && Number(uiData.pingStatus) > 0) {
+				ping_sum += Number(uiData.pingStatus);
+				ping_cnt++;
+			}
+			I("pingText").textContent = (ping_sum / ping_cnt).toFixed(2);
+			drawMeter(I("pingMeter"), msToAmount(Number((ping_sum / ping_cnt) * (status == 2 ? oscillate() : 1))), meterBk, pingColor, Number(uiData.pingProgress), progColor);
+			I("jitText").textContent = format(uiData.jitterStatus);
+			drawMeter(I("jitMeter"), msToAmount(Number(uiData.jitterStatus * (status == 2 ? oscillate() : 1))), meterBk, jitColor, Number(uiData.pingProgress), progColor);
+
+			if (chart1 && chart1.data && chart1.data.datasets) {
+				if (status === 1 && Number(uiData.dlStatus) > 0) {
+					var chart_pos = ~~(parameters.time_dl_max * Number(uiData.dlProgress));
+					chart1.data.datasets[0].data[chart_pos] = Number(uiData.dlStatus);
+					chart1.update();
+					if (last_chart_pos != chart_pos && chart_pos != 0) {
+						if (Number(uiData.dlStatus) > max_download || max_download <= 0) max_download = Number(uiData.dlStatus);
+						if (Number(uiData.dlStatus) < min_download || min_download <= 0) min_download = Number(uiData.dlStatus);
+						total_download = uiData.dlAmount;
+						last_chart_pos = chart_pos;
+					}
+				}
+				if (status === 3 && Number(uiData.ulStatus) > 0) {
+					var chart_pos = ~~(parameters.time_ul_max * Number(uiData.ulProgress));
+					chart1.data.datasets[1].data[chart_pos] = Number(uiData.ulStatus);
+					chart1.update();
+					if (last_chart_pos != chart_pos && chart_pos != 0) {
+						if (Number(uiData.ulStatus) > max_upload || max_upload <= 0) max_upload = Number(uiData.ulStatus);
+						if (Number(uiData.ulStatus) < min_upload || min_upload <= 0) min_upload = Number(uiData.ulStatus);
+						total_upload = uiData.ulAmount;
+						last_chart_pos = chart_pos;
+					}
+				}
+			}
+			if (chart2 && chart2.data && chart2.data.datasets) {
+				if (status === 2 && Number(uiData.pingStatus) > 0 && Number(uiData.pingProgress) < 1) {
+					chart2.data.datasets[0].data.push(Number(uiData.pingStatus));
+					chart2.data.datasets[1].data.push(Number(uiData.jitterStatus));
+					chart2.update();
+				}
+			}
+		}
+
+		function initUI() {
+			drawMeter(I("dlMeter"), 0, meterBk, dlColor, 0);
+			drawMeter(I("ulMeter"), 0, meterBk, ulColor, 0);
+			drawMeter(I("pingMeter"), 0, meterBk, pingColor, 0);
+			drawMeter(I("jitMeter"), 0, meterBk, jitColor, 0);
+			I("dlText").textContent = "";
+			I("ulText").textContent = "";
+			I("pingText").textContent = "";
+			I("jitText").textContent = "";
+			I("ip").textContent = "";
+
+			var chart1ctx = document.getElementById('chart_du_area').getContext('2d');
+			var chart2ctx = document.getElementById('chart_pj_area').getContext('2d');
+			var dlDataset = {
+				label: 'Download',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(96,96,170,0.5)',
+				borderColor: 'rgba(96,96,170,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(96,96,170,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 0,
+				pointHoverBackgroundColor: 'rgba(96,96,170,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [],
+				spanGaps: false
+			};
+			var ulDataset = {
+				label: 'Upload',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(48,144,48,0.5)',
+				borderColor: 'rgba(48,144,48,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(48,144,48,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 0,
+				pointHoverBackgroundColor: 'rgba(48,144,48,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [],
+				spanGaps: false
+			};
+			var pingDataset = {
+				label: 'Ping',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(255,204,0,0.5)',
+				borderColor: 'rgba(255,204,0,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(255,204,0,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 0,
+				pointHoverBackgroundColor: 'rgba(255,204,0,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [],
+				spanGaps: false
+			};
+			var jitterDataset = {
+				label: 'Jitter',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(204,0,0,0.5)',
+				borderColor: 'rgba(204,0,0,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(204,0,0,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 0,
+				pointHoverBackgroundColor: 'rgba(204,0,0,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [],
+				spanGaps: false
+			};
+
+			if (chart1 !== undefined) chart1.destroy();
+			if (chart2 !== undefined) chart2.destroy();
+
+			chart1 = new Chart(chart1ctx, {
+				type: 'line',
+				data: { datasets: [dlDataset, ulDataset] },
+				options: {
+					responsive: true,
+					tooltips: { enabled: false },
+					legend: { position: 'top' },
+					scales: {
+						xAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Time (s)' }, ticks: { beginAtZero: true } }],
+						yAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Speed (Mbps)' }, ticks: { beginAtZero: true } }]
+					}
+				}
+			});
+			chart2 = new Chart(chart2ctx, {
+				type: 'line',
+				data: { datasets: [pingDataset, jitterDataset] },
+				options: {
+					responsive: true,
+					tooltips: { enabled: false },
+					legend: { position: 'top' },
+					scales: {
+						xAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Time (s)' }, ticks: { beginAtZero: true } }],
+						yAxes: [{ display: true, scaleLabel: { display: true, labelString: 'Response (ms)' }, ticks: { beginAtZero: true } }]
+					}
+				}
+			});
+
+			max_download = 0;
+			min_download = 0;
+			max_upload = 0;
+			min_upload = 0;
+			total_download = 0;
+			total_upload = 0;
+			ping_sum = 0;
+			ping_cnt = 0.001;
+			last_chart_pos = undefined;
+			timers = [];
+		}
+
+		window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || (function (callback, element) { setTimeout(callback, 1000 / 60); });
+		function frame() {
+			requestAnimationFrame(frame);
+			updateUI();
+		}
+		frame();
+	</script>
+	<style type="text/css">
+		html,
+		body {
+			border: none;
+			padding: 0;
+			margin: 0;
+			background: #FFFFFF;
+			color: #5A5A5A;
+		}
+
+		body {
+			text-align: center;
+			font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+		}
+
+		h1 img {
+			vertical-align: middle;
+		}
+
+		h3 {
+			margin-top: 3em;
+			font-weight: normal;
+		}
+
+		th {
+			font-weight: normal;
+		}
+
+		a {
+			color: gray;
+		}
+
+		.left_tables {
+			text-align: left;
+			border-spacing: 0.5em;
+			margin-right: 3em;
+		}
+
+		.right_tables {
+			border-spacing: 0em;
+		}
+
+		.right_tables td {
+			text-align: center;
+			border: 1px solid rgb(219, 219, 219);
+			padding: 0.2em;
+		}
+
+		.right_tables th {
+			padding-left: 0.5em;
+			padding-right: 0.5em;
+		}
+
+		.clickable {
+			text-decoration: underline;
+			cursor: pointer;
+		}
+
+		.btn {
+			display: inline-block;
+			margin: 0 auto;
+			color: #6060AA;
+			background-color: rgba(0, 0, 0, 0);
+			border: 0.15em solid rgb(96, 96, 255);
+			border-radius: 0.3em;
+			transition: all 0.3s;
+			box-sizing: border-box;
+			height: 3.5em;
+			min-width: 10em;
+			padding-left: 3em;
+			padding-right: 3em;
+			line-height: 3.2em;
+			cursor: pointer;
+			box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
+			pointer-events: auto;
+			font-size: 1.2em;
+			font-weight: bold;
+		}
+
+		.btn:hover {
+			background-color: rgba(96, 96, 255, 0.2);
+		}
+
+		#startStopBtn.hidden {
+			display: none;
+		}
+
+		#startStopBtn.running {
+			background-color: #FF3030;
+			border-color: #FF6060;
+			color: #FFFFFF;
+		}
+
+		#startStopBtn.disabled {
+			background-color: #FFB5B5;
+			border-color: #FF6060;
+			color: #FFFFFF;
+			pointer-events: none;
+		}
+
+		#test {
+			margin-top: 2em;
+			margin-bottom: 2em;
+		}
+
+		#advanced {
+			margin-top: 2em;
+			margin-bottom: 2em;
+			display: none;
+		}
+
+		#advanced input {
+			width: 3em;
+		}
+
+		#footer {
+			margin-top: 4em;
+		}
+
+		p.footer {
+			color: gray;
+			font-size: 90%;
+		}
+
+		div.footer {
+			display: none;
+		}
+
+		div.footer ul {
+			margin: auto;
+			max-width: 50em;
+		}
+
+		div.footer ul li {
+			color: gray;
+			font-size: 100%;
+			text-align: left;
+			margin-bottom: 0.5em;
+		}
+
+		div.test_area {
+			display: inline-block;
+			width: 16em;
+			height: 12.5em;
+			position: relative;
+			box-sizing: border-box;
+		}
+
+		div.test_name {
+			position: absolute;
+			top: 0.1em;
+			left: 0;
+			width: 100%;
+			font-size: 1.4em;
+			z-index: 9;
+		}
+
+		div.meter_text {
+			position: absolute;
+			bottom: 1.55em;
+			left: 0;
+			width: 100%;
+			font-size: 2.5em;
+			z-index: 9;
+		}
+
+		div.meter_text:empty:before {
+			content: "0.00";
+		}
+
+		div.unit {
+			position: absolute;
+			bottom: 2em;
+			left: 0;
+			width: 100%;
+			z-index: 9;
+		}
+
+		div.test_area canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 1;
+		}
+
+		div.test_group {
+			display: inline-block;
+			vertical-align: top;
+		}
+
+		#loading {
+			background-color: #FFFFFF;
+			color: #404040;
+			text-align: center;
+		}
+
+		span.loadCircle {
+			display: inline-block;
+			width: 2em;
+			height: 2em;
+			vertical-align: middle;
+			background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAP1BMVEUAAAB2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZyFzwnAAAAFHRSTlMAEvRFvX406baecwbf0casimhSHyiwmqgAAADpSURBVHja7dbJbQMxAENRahnN5lkc//5rDRAkDeRgHszXgACJoKiIiIiIiIiIiIiIiIiIiIj4HHspsrpAVhdVVguzrA4OWc10WcEqpwKbnBo0OU1Q5NSpsoJFTgOecrrdEag85DRgktNqfoEdTjnd7hrEHMEJvmRUYJbTYk5Agy6nau6Abp5Cm7mDBtRdPi9gyKdU7w4p1fsLvyqs8hl4z9/w3n/Hmr9WoQ65lAU4d7lMYOz//QboRR5jBZibLMZdAR6O/Vfa1PlxNr3XdS3HzK/HVPRu/KnLs8iAOh993VpRRERERMT/fAN60wwWaVyWwAAAAABJRU5ErkJggg==');
+			background-size: 2em 2em;
+			margin-right: 0.5em;
+			animation: spin 0.6s linear infinite;
+		}
+
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(359deg); }
+		}
+
+		#serverArea {
+			margin-top: 1em;
+		}
+
+		#server {
+			font-size: 1em;
+			padding: 0.2em;
+		}
+
+		#shareArea {
+			width: 95%;
+			max-width: 40em;
+			margin: 0 auto;
+			margin-top: 2em;
+		}
+
+		#shareArea>* {
+			display: block;
+			width: 100%;
+			height: auto;
+			margin: 0.25em 0;
+		}
+
+		div.closePrivacyPolicy {
+			width: 100%;
+			text-align: center;
+		}
+
+		div.closePrivacyPolicy a.privacy {
+			padding: 1em 3em;
+		}
+
+		@media all and (max-width: 40em) {
+			body {
+				font-size: 0.8em;
+			}
+			div.test_group {
+				display: block;
+				margin: 0 auto;
+			}
+		}
+
+		div.visible {
+			animation: fadeIn 0.4s;
+			display: block;
+		}
+
+		div.hidden {
+			animation: fadeOut 0.4s;
+			display: none;
+		}
+
+		@keyframes fadeIn {
+			0% { opacity: 0; }
+			100% { opacity: 1; }
+		}
+
+		@keyframes fadeOut {
+			0% { display: block; opacity: 1; }
+			100% { display: block; opacity: 0; }
+		}
+	</style>
+	<title>FastTest SpeedTest</title>
 </head>
 
-<body>
-    <p>Loading...</p>
+<body onload="initServers()">
+	<h1>FastTest SpeedTest</h1>
+	<div id="loading" class="visible">
+		<p id="message"><span class="loadCircle"></span>Selecting a server...</p>
+	</div>
+	<div id="testWrapper" class="hidden">
+		<button id="startStopBtn" onclick="startStop()" aria-label="Start"></button>
+		<div id="serverArea">
+			Server: <select id="server" onchange="s.setSelectedServer(SPEEDTEST_SERVERS[this.value])"></select>
+		</div>
+		<div id="test">
+			<div class="test_group">
+				<div class="test_area">
+					<div class="test_name">Ping</div>
+					<canvas id="pingMeter" class="meter"></canvas>
+					<div id="pingText" class="meter_text"></div>
+					<div class="unit">ms</div>
+				</div>
+				<div class="test_area">
+					<div class="test_name">Jitter</div>
+					<canvas id="jitMeter" class="meter"></canvas>
+					<div id="jitText" class="meter_text"></div>
+					<div class="unit">ms</div>
+				</div>
+				<canvas id="chart_pj_area"></canvas>
+			</div>
+			<div class="test_group">
+				<div class="test_area">
+					<div class="test_name">Download</div>
+					<canvas id="dlMeter" class="meter"></canvas>
+					<div id="dlText" class="meter_text"></div>
+					<div class="unit">Mbps</div>
+				</div>
+				<div class="test_area">
+					<div class="test_name">Upload</div>
+					<canvas id="ulMeter" class="meter"></canvas>
+					<div id="ulText" class="meter_text"></div>
+					<div class="unit">Mbps</div>
+				</div>
+				<canvas id="chart_du_area"></canvas>
+			</div>
+			<div id="ipArea">
+				<span id="ip"></span>
+			</div>
+			<div id="shareArea" style="display:none">
+				<h3>Share results</h3>
+				<p>Test ID: <span id="testId"></span></p>
+				<input type="text" value="" id="resultsURL" readonly="readonly"
+					onclick="this.select();this.focus();this.select();document.execCommand('copy');alert('Link copied')" />
+				<img src="" id="resultsImg" />
+			</div>
+		</div>
+		<a href="stability.html">Stability Test</a> | <a href="https://github.com/lordpipon/fasttest">Source code</a>
+	</div>
 </body>
 
 </html>
