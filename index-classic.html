@@ -223,6 +223,7 @@
 			if (!forced && s.getState() != 3) return;
 			if (uiData == null) return;
 			var status = uiData.testState;
+			var running = s.getState() == 3;
 			I("ip").textContent = uiData.clientIp;
 			I("dlText").textContent = (status == 1 && uiData.dlStatus == 0) ? "..." : format(uiData.dlStatus);
 			drawMeter(I("dlMeter"), mbpsToAmount(Number(uiData.dlStatus * (status == 1 ? oscillate() : 1))), meterBk, dlColor, Number(uiData.dlProgress), progColor);
@@ -241,31 +242,28 @@
 				if (status === 1 && Number(uiData.dlStatus) > 0) {
 					var chart_pos = ~~(parameters.time_dl_max * Number(uiData.dlProgress));
 					chart1.data.datasets[0].data[chart_pos] = Number(uiData.dlStatus);
-					chart1.update();
-					if (last_chart_pos != chart_pos && chart_pos != 0) {
-						if (Number(uiData.dlStatus) > max_download || max_download <= 0) max_download = Number(uiData.dlStatus);
-						if (Number(uiData.dlStatus) < min_download || min_download <= 0) min_download = Number(uiData.dlStatus);
-						total_download = uiData.dlAmount;
-						last_chart_pos = chart_pos;
-					}
+					chart1.data.labels[chart_pos] = chart_pos + "s";
+					chart1.update('none');
+					if (Number(uiData.dlStatus) > max_download || max_download <= 0) max_download = Number(uiData.dlStatus);
+					if (Number(uiData.dlStatus) < min_download || min_download <= 0) min_download = Number(uiData.dlStatus);
+					total_download = uiData.dlAmount;
 				}
 				if (status === 3 && Number(uiData.ulStatus) > 0) {
 					var chart_pos = ~~(parameters.time_ul_max * Number(uiData.ulProgress));
 					chart1.data.datasets[1].data[chart_pos] = Number(uiData.ulStatus);
-					chart1.update();
-					if (last_chart_pos != chart_pos && chart_pos != 0) {
-						if (Number(uiData.ulStatus) > max_upload || max_upload <= 0) max_upload = Number(uiData.ulStatus);
-						if (Number(uiData.ulStatus) < min_upload || min_upload <= 0) min_upload = Number(uiData.ulStatus);
-						total_upload = uiData.ulAmount;
-						last_chart_pos = chart_pos;
-					}
+					chart1.data.labels[chart_pos] = chart_pos + "s";
+					chart1.update('none');
+					if (Number(uiData.ulStatus) > max_upload || max_upload <= 0) max_upload = Number(uiData.ulStatus);
+					if (Number(uiData.ulStatus) < min_upload || min_upload <= 0) min_upload = Number(uiData.ulStatus);
+					total_upload = uiData.ulAmount;
 				}
 			}
 			if (chart2 && chart2.data && chart2.data.datasets) {
 				if (status === 2 && Number(uiData.pingStatus) > 0 && Number(uiData.pingProgress) < 1) {
 					chart2.data.datasets[0].data.push(Number(uiData.pingStatus));
 					chart2.data.datasets[1].data.push(Number(uiData.jitterStatus));
-					chart2.update();
+					chart2.data.labels.push("");
+					chart2.update('none');
 				}
 			}
 		}
@@ -417,7 +415,7 @@
 		window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || (function (callback, element) { setTimeout(callback, 1000 / 60); });
 		function frame() {
 			requestAnimationFrame(frame);
-			updateUI();
+			if (s.getState() == 3 || uiData != null) updateUI(true);
 		}
 		frame();
 	</script>
@@ -484,19 +482,19 @@
 			margin: 1em auto;
 			color: #6060AA;
 			background-color: rgba(0, 0, 0, 0);
-			border: 0.2em solid rgb(96, 96, 255);
-			border-radius: 0.5em;
+			border: 0.15em solid rgb(96, 96, 255);
+			border-radius: 0.4em;
 			transition: all 0.3s;
 			box-sizing: border-box;
-			height: 5em;
-			min-width: 16em;
-			padding-left: 3em;
-			padding-right: 3em;
-			line-height: 4.6em;
+			height: 3.5em;
+			min-width: 12em;
+			padding-left: 2em;
+			padding-right: 2em;
+			line-height: 3.2em;
 			cursor: pointer;
 			box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
 			pointer-events: auto;
-			font-size: 1.8em;
+			font-size: 1.3em;
 			font-weight: bold;
 		}
 
@@ -509,6 +507,14 @@
 			background-color: #FF3030;
 			border-color: #FF6060;
 			color: #FFFFFF;
+		}
+
+		#startStopBtn:before {
+			content: "Start";
+		}
+
+		#startStopBtn.running:before {
+			content: "Abort";
 		}
 
 		#startStopBtn.disabled {
