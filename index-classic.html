@@ -167,7 +167,7 @@
 		var ping_sum = 0, ping_cnt = 0.001;
 		var timers = [];
 		var parameters = {
-			overheadCompensationFactor: 1.0,
+			overheadCompensationFactor: 0,
 			enable_quirks: true,
 			time_ul_max: 15,
 			time_dl_max: 15,
@@ -479,33 +479,30 @@
 			cursor: pointer;
 		}
 
-		.btn {
+		#startStopBtn {
 			display: inline-block;
-			margin: 0 auto;
+			margin: 1em auto;
 			color: #6060AA;
 			background-color: rgba(0, 0, 0, 0);
-			border: 0.15em solid rgb(96, 96, 255);
-			border-radius: 0.3em;
+			border: 0.2em solid rgb(96, 96, 255);
+			border-radius: 0.5em;
 			transition: all 0.3s;
 			box-sizing: border-box;
-			height: 3.5em;
-			min-width: 10em;
+			height: 5em;
+			min-width: 16em;
 			padding-left: 3em;
 			padding-right: 3em;
-			line-height: 3.2em;
+			line-height: 4.6em;
 			cursor: pointer;
 			box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
 			pointer-events: auto;
-			font-size: 1.2em;
+			font-size: 1.8em;
 			font-weight: bold;
 		}
 
-		.btn:hover {
-			background-color: rgba(96, 96, 255, 0.2);
-		}
-
-		#startStopBtn.hidden {
-			display: none;
+		#startStopBtn:hover {
+			box-shadow: 0 0 2em rgba(96, 96, 255, 0.3), inset 0 0 1em rgba(96, 96, 255, 0.1);
+			background-color: rgba(96, 96, 255, 0.1);
 		}
 
 		#startStopBtn.running {
